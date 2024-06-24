@@ -1,3 +1,51 @@
+# Using Wave Sim with PX4!
+
+Before we can use anything with PX4, we need first to install the Wave Sim and its requirements. For that, please follow the section below called: **Wave Sim**.
+
+Once you have everything installed (ROS2, Wave Sim, etc.), you must complete these steps:
+
+1. Make sure you have the PX4 gz submodule (Tools/simulation/gz) checked out.
+2. Update the submodule to point to the correct repository and branch:
+
+```
+cd PX4-Autopilot/Tools/simulation/gz
+git remote set-url boat_origin git@github.com:PerFrivik/PX4-gazebo-models.git
+git fetch boat_origin
+git checkout -b boat_model boat_origin/boat_model
+```
+
+With this branch checked out, you will have the boat model and the required plugins to control the system.
+
+To run the simulation, you must source certain plugins. To simplify this process, I recommend adding and **adjusting** the following example to your setup:
+
+```
+alias px4_boat_sim='
+export GZ_VERSION=garden &&
+export GZ_IP=127.0.0.1 &&
+export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:$HOME/**path_to_your_ros2_workspace/your_workspace_name**/src/asv_wave_sim/gz-waves-models/models:$HOME/**path_to_your_ros2_workspace/your_workspace_name**/src/asv_wave_sim/gz-waves-models/world_models:$HOME/**path_to_your_ros2_workspace/your_workspace_name**/src/asv_wave_sim/gz-waves-models/worlds &&
+export GZ_SIM_SYSTEM_PLUGIN_PATH=$GZ_SIM_SYSTEM_PLUGIN_PATH:$HOME/**path_to_your_ros2_workspace/your_workspace_name**/install/lib &&
+export GZ_GUI_PLUGIN_PATH=$GZ_GUI_PLUGIN_PATH:$HOME/**path_to_your_ros2_workspace/your_workspace_name**/src/asv_wave_sim/gz-waves/src/gui/plugins/waves_control/build &&
+source $HOME/**path_to_your_ros2_workspace/your_workspace_name**/install/setup.bash &&
+cd $HOME/PX4-Autopilot
+'
+```
+
+If you did the default setup as described in the installation and PX4-Autopilot is in your home directory, you can directly use the following alias:
+
+```
+alias px4_boat_sim='
+export GZ_VERSION=garden &&
+export GZ_IP=127.0.0.1 &&
+export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:$HOME/gz_ws/src/asv_wave_sim/gz-waves-models/models:$HOME/gz_ws/src/asv_wave_sim/gz-waves-models/world_models:$HOME/gz_ws/src/asv_wave_sim/gz-waves-models/worlds &&
+export GZ_SIM_SYSTEM_PLUGIN_PATH=$GZ_SIM_SYSTEM_PLUGIN_PATH:$HOME/gz_ws/install/lib &&
+export GZ_GUI_PLUGIN_PATH=$GZ_GUI_PLUGIN_PATH=$HOME/gz_ws/src/asv_wave_sim/gz-waves/src/gui/plugins/waves_control/build &&
+source $HOME/gz_ws/install/setup.bash &&
+cd $HOME/PX4-Autopilot
+'
+```
+To run the simulation, you will also need to check out a specific PX4 Branch, I will get back to this later... Or I should just add this as a submodule to that 🤔
+
+
 # Wave Sim
 
 [![Ubuntu Jammy CI](https://github.com/srmainwaring/asv_wave_sim/actions/workflows/ubuntu-jammy-ci.yml/badge.svg)](https://github.com/srmainwaring/asv_wave_sim/actions/workflows/ubuntu-jammy-ci.yml)
